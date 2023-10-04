@@ -2,7 +2,6 @@ import fs from 'node:fs';
 import { log } from './log.js';
 import { knownSvelteConfigNames } from './load-svelte-config.js';
 import path from 'node:path';
-import process from 'node:process';
 
 /**
  * @param {import('../types/options.d.ts').ResolvedOptions} options
@@ -27,9 +26,11 @@ export function setupWatchers(options, cache, requestParser) {
 					undefined,
 					'hmr'
 				);
-				process.nextTick(() => {
-					watcher.emit('change', dependant);
-				})
+				// do not emit virtual events
+				// as there is no way to prevent
+				// cascading emission
+				// over lack f checks for circular dependencies
+				// watcher.emit('change', dependant);
 			}
 		});
 	};
