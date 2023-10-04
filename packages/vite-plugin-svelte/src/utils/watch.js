@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import { log } from './log.js';
 import { knownSvelteConfigNames } from './load-svelte-config.js';
 import path from 'node:path';
+import process from 'node:process';
 
 /**
  * @param {import('../types/options.d.ts').ResolvedOptions} options
@@ -26,7 +27,9 @@ export function setupWatchers(options, cache, requestParser) {
 					undefined,
 					'hmr'
 				);
-				watcher.emit('change', dependant);
+				process.nextTick(() => {
+					watcher.emit('change', dependant);
+				})
 			}
 		});
 	};
